@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>Hello...</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id="image-container"></div>
+	<div id="score">SCORE: </div>
+	<div class="flex container"> 
+		<h1>What artistic movement does this piece belong in?</h1>
+		<div class="flex-container">
+			<form id="questions" action="javascript:void(0);"></form>
+		</div>
+	</div>
+<script> 
+	var movements = [
+		"Fauvism", "Suprematism", "Minimalism", "Futurism",
+		"Cubism", "Dadaism", "Abstract-Expressionism",
+		"Expressionism", "Romanticism", "Impressionism"];
+	var images = [];
+	for (var i=0; i<10; i++){
+		var str = "<img id=\'" + movements[i] + "\' src=\'imgs/" + movements[i] + " "
+		for (var x=0; x<10; x++) {
+			var singleImage = str + (x+1) + ".jpg' />";
+			images[i*10 + (x+1)] = singleImage
+			
+		}
+	}
+
+	function getRand(min,max) {
+		return Math.floor(Math.random() * (max - min + 1) + min)
+	}
+	
+	var image = images[getRand(1,100)]
+	document.getElementById("image-container").innerHTML = image
+	
+	for (var i=0; i<movements.length; i++) {
+		var div = document.createElement("input")
+		div.setAttribute("type","submit")
+		div.setAttribute("class","list")
+		div.setAttribute("value",movements[i])
+		div.setAttribute("id",movements[i])
+		document.getElementById("questions").appendChild(div)
+	}
+	var wins = parseInt(sessionStorage.getItem("wins"))
+	var losses = parseInt(sessionStorage.getItem("losses"))
+	console.log(wins)
+	console.log(losses)
+	console.log(isNaN(losses))
+	if (isNaN(wins)) {
+		 console.log(wins + "no wins. set to 0")
+		 sessionStorage.setItem("wins","0")
+		 score = 0
+	}
+	if (isNaN(losses)) {
+		 console.log(losses + "no losses. set to 0")
+		 sessionStorage.setItem("losses","0")
+		 score = 0
+	}
+	
+	$("input").click(function() {
+		console.log("something was clicked")
+		var x = document.getElementsByTagName("img")[0].getAttribute("id")
+		console.log(x + " is the answer after the click")
+		console.log(this.getAttribute("value"))
+		if (x == this.getAttribute("value")) {
+			$(this).addClass("correct")
+			console.log("correct answer was clicked")
+			wins += 1;
+			console.log(wins + "wins now!")
+			sessionStorage.setItem("wins",wins.toString())
+			window.setTimeout(next,1200);
+		}
+		else {
+			console.log("incorrect answer was clicked")
+			$(this).addClass("incorrect")
+			console.log(x)
+			var ok = document.querySelector("input#" + x)
+			console.log(ok)
+			losses += 1;
+			$(ok).addClass("correct")
+			sessionStorage.setItem("losses",losses.toString())
+			window.setTimeout(next,1200);
+		}
+		function next() {
+				console.log("waiting")
+				window.location.href = "https://preview.c9users.io/meg99/random-art/art-movements/index.html";
+		}
+	})
+
+	 wins = parseInt(sessionStorage.getItem("wins"))
+	 losses = parseInt(sessionStorage.getItem("losses"))
+	console.log(wins)
+	console.log(losses)
+	
+	if (wins == 0 && losses == 0) {
+		score = 0 + "%"
+	}
+	else {
+		console.log(wins + ": win count")
+		console.log(losses + ":loss count")
+		console.log(typeof wins)
+		var totalgames = wins + losses
+		console.log(wins/totalgames )
+		var scorepercent = (((wins / totalgames ) * 100) )
+		scorepercent = Math.round(scorepercent)
+		console.log(scorepercent)
+		var score = scorepercent + "%"
+		console.log(score)
+		
+	}
+	var p = document.createElement("p")
+	p.innerHTML = score
+	document.getElementById("score").appendChild(p)
+</script>
+
+</body>
+</html>
